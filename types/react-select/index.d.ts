@@ -371,13 +371,17 @@ type FormatGroupLabel = (group: GroupType) => Node;
 
 export function mergeStyles(source: Object, target: Object): {};
 
-export function createFilter(config: {
+export interface FilterConfig {
     ignoreCase?: boolean;
     ignoreAccents?: boolean;
-    stringify?: (obj: Object) => string;
+    stringify?: (obj: object) => string;
     trim?: boolean;
     matchFrom?: 'any' | 'start';
-}): (option: Object, input: string) => boolean;
+}
+
+export function createFilter(
+    config: FilterConfig
+): (option: object, input: string) => boolean;
 
 export function makeAnimated(
     externalComponents?: SelectComponentsConfig
@@ -496,6 +500,7 @@ export interface ReactSelectProps {
     components?: SelectComponentsConfig;
     /* Whether the value of the select, e.g. SingleValue, should be displayed in the control. */
     controlShouldRenderValue?: boolean;
+    defaultValue?: ValueType;
     /* Delimiter used to join multiple values into a single HTML Input value */
     delimiter?: string;
     /* Clear all values when the user presses escape AND the menu is closed */
