@@ -1,4 +1,4 @@
-// Type definitions for react-select 2.0.0
+// Type definitions for react-select 2.0
 // Project: https://github.com/JedWatson/react-select
 // Definitions by: AJ Kovalainen <https://github.com/Darep>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
@@ -18,13 +18,13 @@ export type FocusEventHandler = React.FocusEventHandler<HTMLElement>;
 export type MouseEventHandler = React.MouseEventHandler<HTMLElement>;
 export type KeyboardEventHandler = React.KeyboardEventHandler<HTMLElement>;
 
-export type OptionType = {
+export interface OptionType {
     [key: string]: any;
-};
+}
 
 export type OptionsType = OptionType[];
 
-export type ValueType = OptionType | OptionsType | null | void;
+export type ValueType = OptionType | OptionsType | null | undefined;
 
 export type ActionTypes =
     | 'select-option'
@@ -35,9 +35,9 @@ export type ActionTypes =
     | 'clear'
     | 'create-option';
 
-export type ActionMeta = {
+export interface ActionMeta {
     action: ActionTypes;
-};
+}
 
 export type InputActionTypes =
     | 'set-value'
@@ -45,14 +45,17 @@ export type InputActionTypes =
     | 'input-blur'
     | 'menu-close';
 
-export type InputActionMeta = {
+export interface InputActionMeta {
     action: InputActionTypes;
-};
+}
 
 export type MenuPlacement = 'auto' | 'bottom' | 'top';
 export type MenuPosition = 'absolute' | 'fixed';
 
-type StyleProps = { [key: string]: any };
+export interface StyleProps {
+    [key: string]: any;
+}
+
 export type StyleFn = (props: StyleProps) => {};
 
 // https://github.com/JedWatson/react-select/blob/master/src/styles.js#L35
@@ -83,13 +86,13 @@ export interface StylesConfig {
     valueContainer?: StyleFn;
 }
 
-type InnerProps = {
+export interface InnerProps {
     id: string;
     key: string;
     onClick: MouseEventHandler;
     onMouseOver: MouseEventHandler;
     tabIndex: number;
-};
+}
 
 export interface CommonProps {
     clearValue?(): void;
@@ -100,10 +103,10 @@ export interface CommonProps {
         c: string | undefined
     ) => string | undefined;
     /**
-        Get the styles of a particular part of the select. Pass in the name of the
-        property as the first argument, and the current props as the second argument.
-        See the `styles` object for the properties available.
-    */
+     * Get the styles of a particular part of the select. Pass in the name of the
+     *  property as the first argument, and the current props as the second argument.
+     *  See the `styles` object for the properties available.
+     */
     getStyles: (base: string, state: any) => {};
     getValue: () => ValueType;
     hasValue: boolean;
@@ -216,7 +219,10 @@ export interface LoadingIconProps extends CommonProps {
     size: number;
 }
 
-type MenuState = { placement: 'bottom' | 'top' | null; maxHeight: number };
+export interface MenuState {
+    placement: 'bottom' | 'top' | null;
+    maxHeight: number;
+}
 
 export interface MenuProps extends CommonProps {
     /** The children to be rendered. */
@@ -224,7 +230,7 @@ export interface MenuProps extends CommonProps {
     /** Callback to update the portal after possible flip. */
     getPortalPlacement: (state: MenuState) => void;
     /** Props to be passed to the menu wrapper. */
-    innerProps: Object;
+    innerProps: object;
     /** Set the maximum height of the menu. */
     maxMenuHeight: number;
     /** Set whether the menu should be at the top, at the bottom. The auto options ¨ it to bottom. */
@@ -237,12 +243,12 @@ export interface MenuProps extends CommonProps {
     menuShouldScrollIntoView: boolean;
 }
 
-type MenuListState = {
+export interface MenuListState {
     /** Set classname for isMulti */
     isMulti: boolean;
     /* Set the max height of the Menu component  */
     maxHeight: number;
-};
+}
 
 export interface MenuListProps {
     /** The children to be rendered. */
@@ -352,24 +358,25 @@ export const components: {
     ValueContainer: React.ComponentType;
 };
 
-type FormatOptionLabelContext = 'menu' | 'value';
-type FormatOptionLabelMeta = {
+export type FormatOptionLabelContext = 'menu' | 'value';
+
+export interface FormatOptionLabelMeta {
     context: FormatOptionLabelContext;
     inputValue: string;
     selectValue: ValueType;
-};
+}
 
-type GetOptionLabel = (option: OptionType) => string;
-type GetOptionValue = (option: OptionType) => string;
+export type GetOptionLabel = (option: OptionType) => string;
+export type GetOptionValue = (option: OptionType) => string;
 
-export type GroupType = {
+export interface GroupType {
     [key: string]: any;
     options: OptionsType;
-};
+}
 
-type FormatGroupLabel = (group: GroupType) => Node;
+export type FormatGroupLabel = (group: GroupType) => Node;
 
-export function mergeStyles(source: Object, target: Object): {};
+export function mergeStyles(source: object, target: object): {};
 
 export interface FilterConfig {
     ignoreCase?: boolean;
@@ -388,29 +395,29 @@ export function makeAnimated(
 ): SelectComponentsConfig;
 
 // Async
-export type AsyncProps = {
+export interface AsyncProps {
     /* The default set of options to show before the user starts searching. When
      set to `true`, the results for loadOptions('') will be autoloaded. */
-    defaultOptions: OptionsType | boolean;
+    defaultOptions?: OptionsType | boolean;
     /* Function that returns a promise, which is the set of options to be used
      once the promise resolves. */
-    loadOptions: (
+    loadOptions?: (
         inputValue: string,
         callback: ((options: OptionsType) => void)
     ) => Promise<any> | void;
     /* If cacheOptions is truthy, then the loaded data will be cached. The cache
      will remain until `cacheOptions` changes value. */
-    cacheOptions: any;
-};
+    cacheOptions?: any;
+}
 
-type AsyncState = {
+export interface AsyncState {
     defaultOptions?: OptionsType;
     inputValue: string;
     isLoading: boolean;
     loadedInputValue?: string;
     loadedOptions: OptionsType;
     passEmptyOptions: boolean;
-};
+}
 
 export class Async extends React.Component<
     ReactSelectProps & AsyncProps,
@@ -450,8 +457,8 @@ export interface CreatableProps {
     createOptionPosition?: 'first' | 'last';
 }
 
-interface CreatableState {
-    newOption: OptionType | void;
+export interface CreatableState {
+    newOption: OptionType | undefined;
     options: OptionsType;
 }
 
@@ -481,22 +488,22 @@ export interface ReactSelectProps {
     /* Close the select menu when the user selects an option */
     closeMenuOnSelect?: boolean;
     /*
-    If `true`, close the select menu when the user scrolls the document/body.
-    If a function, takes a standard javascript `ScrollEvent` you return a boolean:
-    `true` => The menu closes
-    `false` => The menu stays open
-    This is useful when you have a scrollable modal and want to portal the menu out,
-    but want to avoid graphical issues.
-  */
+        If `true`, close the select menu when the user scrolls the document/body.
+        If a function, takes a standard javascript `ScrollEvent` you return a boolean:
+        `true` => The menu closes
+        `false` => The menu stays open
+        This is useful when you have a scrollable modal and want to portal the menu out,
+        but want to avoid graphical issues.
+    */
     closeMenuOnScroll?: boolean | EventListener;
     /*
-    This complex object includes all the compositional components that are used
-    in `react-select`. If you wish to overwrite a component, pass in an object
-    with the appropriate namespace.
-    If you only wish to restyle a component, we recommend using the `styles` prop
-    instead. For a list of the components that can be passed in, and the shape
-    that will be passed to them, see [the components docs](/api#components)
-  */
+        This complex object includes all the compositional components that are used
+        in `react-select`. If you wish to overwrite a component, pass in an object
+        with the appropriate namespace.
+        If you only wish to restyle a component, we recommend using the `styles` prop
+        instead. For a list of the components that can be passed in, and the shape
+        that will be passed to them, see [the components docs](/api#components)
+    */
     components?: SelectComponentsConfig;
     /* Whether the value of the select, e.g. SingleValue, should be displayed in the control. */
     controlShouldRenderValue?: boolean;
@@ -506,7 +513,7 @@ export interface ReactSelectProps {
     /* Clear all values when the user presses escape AND the menu is closed */
     escapeClearsValue?: boolean;
     /* Custom method to filter whether an option should be displayed in the menu */
-    filterOption?: ((option: Object, input: string) => boolean) | null;
+    filterOption?: ((option: object, input: string) => boolean) | null;
     /* Formats group labels in the menu as React components */
     formatGroupLabel?: FormatGroupLabel;
     /* Formats option labels in the menu and control as React components */
