@@ -1,15 +1,122 @@
 import * as React from 'react';
-import Select, * as SelectModule from 'react-select';
+import Select, { Async, createFilter, FilterConfig, OptionsType as Options, OptionType } from 'react-select';
 
-const EXAMPLE_OPTIONS: SelectModule.OptionsType = [
-    { value: 'one', label: 'One', first: true },
-    { value: 'two', label: 'Two', last: true, custom: 'custom' }
+interface ColourOption {
+    value: string;
+    label: string;
+    color: string;
+    disabled?: boolean;
+}
+
+const colourOptions: ColourOption[] = [
+    {value: 'ocean', label: 'Ocean', color: '#00B8D9'},
+    {value: 'blue', label: 'Blue', color: '#0052CC', disabled: true},
+    {value: 'purple', label: 'Purple', color: '#5243AA'},
+    {value: 'red', label: 'Red', color: '#FF5630'},
+    {value: 'orange', label: 'Orange', color: '#FF8B00'},
+    {value: 'yellow', label: 'Yellow', color: '#FFC400'},
+    {value: 'green', label: 'Green', color: '#36B37E'},
+    {value: 'forest', label: 'Forest', color: '#00875A'},
+    {value: 'slate', label: 'Slate', color: '#253858'},
+    {value: 'silver', label: 'Silver', color: '#666666'},
 ];
 
-const backspaceRemovesValue = () => <Select backspaceRemovesValue />;
-const pageSize = () => <Select pageSize={5} />;
-const rtl = () => <Select isRtl />;
+interface FlavourOption {
+    value: string;
+    label: string;
+    rating: 'safe' | 'good' | 'wild' | 'crazy';
+}
 
-const optionsAndValue = () => (
-    <Select options={EXAMPLE_OPTIONS} value={EXAMPLE_OPTIONS[0]} />
-);
+const flavourOptions: FlavourOption[] = [
+    {value: 'vanilla', label: 'Vanilla', rating: 'safe'},
+    {value: 'chocolate', label: 'Chocolate', rating: 'good'},
+    {value: 'strawberry', label: 'Strawberry', rating: 'wild'},
+    {value: 'salted-caramel', label: 'Salted Caramel', rating: 'crazy'},
+];
+
+interface SelectCreateFilterProps {
+    ignoreCase: boolean;
+    ignoreAccents: boolean;
+    trim: boolean;
+    matchFromStart: boolean;
+}
+
+export class SelectCreateFilter extends React.PureComponent<SelectCreateFilterProps> {
+    render() {
+        const {
+            ignoreCase,
+            ignoreAccents,
+            trim,
+            matchFromStart,
+        } = this.props;
+
+        const filterConfig: FilterConfig = {
+            ignoreCase,
+            ignoreAccents,
+            trim,
+            matchFrom: matchFromStart ? 'start' : 'any',
+        };
+
+        return (
+            <Select
+                defaultValue={colourOptions[0]}
+                isClearable
+                isSearchable
+                name="color"
+                options={colourOptions}
+                filterOption={createFilter(filterConfig)}
+            />
+        );
+    }
+}
+
+export class CustomIsOptionDisabled extends React.PureComponent<any> {
+    render() {
+        return (
+            <Select
+                defaultValue={flavourOptions[0]}
+                isClearable
+                isSearchable
+                name="color"
+                options={flavourOptions}
+                isOptionDisabled={(option: OptionType) => option.rating !== 'safe'}
+            />
+        );
+    }
+}
+
+interface WithCallbacksState {
+    inputValue: string;
+}
+
+export class WithCallbacks extends React.PureComponent<any, WithCallbacksState> {
+    state: WithCallbacksState = {
+        inputValue: ''
+    };
+
+    private readonly filterColors = (inputValue: string): Options => colourOptions.filter(
+        i => i.label.toLowerCase().includes(inputValue.toLowerCase())
+    )
+
+    private readonly loadOptions = (inputValue: string, callback: (options: Options) => void) => {
+        setTimeout(() => {
+            callback(this.filterColors(inputValue));
+        }, 1000);
+    }
+
+    private readonly handleInputChange = (newValue: string) => {
+        const inputValue = newValue.replace(/\W/g, '');
+        this.setState({inputValue});
+        return inputValue;
+    }
+
+    render() {
+        return (
+            <Async
+                cacheOptions
+                loadOptions={this.loadOptions}
+                onInputChange={this.handleInputChange}
+            />
+        );
+    }
+}
